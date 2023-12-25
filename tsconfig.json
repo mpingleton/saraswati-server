@@ -8,6 +8,6 @@
   },
   "files": [
     "src/main.ts",
-    "src/routers/index.ts"
+    "src/handlers/api.ts"
   ]
 }
