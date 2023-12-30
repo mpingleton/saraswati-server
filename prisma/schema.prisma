@@ -11,147 +11,144 @@ datasource db {
 }
 
 model User {
-  username String @db.VarChar(100) @id
-  nameDisplay String @db.VarChar(100)
-  passphraseHash String @db.VarChar(128)
-  isEnabled Boolean
+  id Int @id
 
   developingProjects ProjectDeveloper[]
 }
 
 model Project {
-  id Int @id @default(autoincrement())
+  id            Int    @id @default(autoincrement())
   namePrototype String @db.VarChar(100)
-  nameProduct String @db.VarChar(100)
+  nameProduct   String @db.VarChar(100)
 
   developers ProjectDeveloper[]
   components Component[]
-  releases Release[]
-  problems Problem[]
-  features Feature[]
+  releases   Release[]
+  problems   Problem[]
+  features   Feature[]
 }
 
 model ProjectDeveloper {
-  id Int @id @default(autoincrement())
+  id        Int @id @default(autoincrement())
   projectId Int
-  username String @db.VarChar(100)
+  userId    Int
 
-  assignedProblemTasks ProblemTask[] @relation("problem_task_assigned_developer")
+  assignedProblemTasks  ProblemTask[] @relation("problem_task_assigned_developer")
   completedProblemTasks ProblemTask[] @relation("problem_task_completed_by_developer")
-  assignedFeatureTasks FeatureTask[] @relation("feature_task_assigned_developer")
+  assignedFeatureTasks  FeatureTask[] @relation("feature_task_assigned_developer")
   completedFeatureTasks FeatureTask[] @relation("feature_task_completed_by_developer")
-  project Project @relation(fields: [projectId], references: [id])
-  user User @relation(fields: [username], references: [username])
+  project               Project       @relation(fields: [projectId], references: [id])
+  user                  User          @relation(fields: [userId], references: [id])
 }
 
 model Component {
-  id Int @id @default(autoincrement())
+  id        Int    @id @default(autoincrement())
   projectId Int
-  subject String @db.VarChar(100)
+  subject   String @db.VarChar(100)
 
-  project Project @relation(fields: [projectId], references: [id])
-  problem Problem[]
+  project      Project       @relation(fields: [projectId], references: [id])
+  problem      Problem[]
   featureTasks FeatureTask[]
 }
 
 model Release {
-  id Int @id @default(autoincrement())
-  projectId Int
-  versionNumber String @db.VarChar(20)
-  versionName String @db.VarChar(100)
-  targetDate DateTime? @db.Timestamptz()
-  actualDate DateTime? @db.Timestamptz()
+  id            Int       @id @default(autoincrement())
+  projectId     Int
+  versionNumber String    @db.VarChar(20)
+  versionName   String    @db.VarChar(100)
+  targetDate    DateTime? @db.Timestamptz()
+  actualDate    DateTime? @db.Timestamptz()
 
-  project Project @relation(fields: [projectId], references: [id])
-  problemsTargeted Problem[] @relation("target_releases")
-  problemsActual Problem[] @relation("actual_releases")
-  featureReleases FeatureRelease[]
+  project          Project          @relation(fields: [projectId], references: [id])
+  problemsTargeted Problem[]        @relation("target_releases")
+  problemsActual   Problem[]        @relation("actual_releases")
+  featureReleases  FeatureRelease[]
 }
 
 model Problem {
-  id Int @id @default(autoincrement())
-  projectId Int
-  componentId Int?
+  id                 Int       @id @default(autoincrement())
+  projectId          Int
+  componentId        Int?
   targetFixReleaseId Int?
   actualFixReleaseId Int?
-  timeClosed DateTime?
-  subject String @db.VarChar(100)
-  description String @db.VarChar(2000)
-  severity String @db.VarChar(10)
+  timeClosed         DateTime?
+  subject            String    @db.VarChar(100)
+  description        String    @db.VarChar(2000)
+  severity           String    @db.VarChar(10)
 
-  reports ProblemReport[]
-  tasks ProblemTask[]
-  project Project @relation(fields: [projectId], references: [id])
-  component Component? @relation(fields: [componentId], references: [id])
-  targetRelease Release? @relation("target_releases", fields: [targetFixReleaseId], references: [id])
-  actualRelease Release? @relation("actual_releases", fields: [actualFixReleaseId], references: [id])
+  reports       ProblemReport[]
+  tasks         ProblemTask[]
+  project       Project         @relation(fields: [projectId], references: [id])
+  component     Component?      @relation(fields: [componentId], references: [id])
+  targetRelease Release?        @relation("target_releases", fields: [targetFixReleaseId], references: [id])
+  actualRelease Release?        @relation("actual_releases", fields: [actualFixReleaseId], references: [id])
 }
 
 model ProblemReport {
-  id Int @id @default(autoincrement())
-  problemId Int
-  subject String @db.VarChar(100)
+  id          Int    @id @default(autoincrement())
+  problemId   Int
+  subject     String @db.VarChar(100)
   description String @db.VarChar(2000)
-  pocName String @db.VarChar(100)
-  pocPhone String @db.VarChar(20)
-  pocEmail String @db.VarChar(100)
+  pocName     String @db.VarChar(100)
+  pocPhone    String @db.VarChar(20)
+  pocEmail    String @db.VarChar(100)
 
   problem Problem @relation(fields: [problemId], references: [id])
 }
 
 model ProblemTask {
-  id Int @id @default(autoincrement())
-  problemId Int
-  subject String @db.VarChar(100)
-  description String @db.VarChar(2000)
-  timeDue DateTime? @db.Timestamptz()
-  timeCompleted DateTime? @db.Timestamptz()
-  assignedDeveloperId Int?
+  id                     Int       @id @default(autoincrement())
+  problemId              Int
+  subject                String    @db.VarChar(100)
+  description            String    @db.VarChar(2000)
+  timeDue                DateTime? @db.Timestamptz()
+  timeCompleted          DateTime? @db.Timestamptz()
+  assignedDeveloperId    Int?
   completedByDeveloperId Int?
 
-  problem Problem @relation(fields: [problemId], references: [id])
-  assignedDeveloper ProjectDeveloper? @relation("problem_task_assigned_developer", fields: [assignedDeveloperId], references: [id])
+  problem              Problem           @relation(fields: [problemId], references: [id])
+  assignedDeveloper    ProjectDeveloper? @relation("problem_task_assigned_developer", fields: [assignedDeveloperId], references: [id])
   completedByDeveloper ProjectDeveloper? @relation("problem_task_completed_by_developer", fields: [completedByDeveloperId], references: [id])
 }
 
 model Feature {
-  id Int @id @default(autoincrement())
-  projectId Int
-  subject String @db.VarChar(100)
+  id          Int    @id @default(autoincrement())
+  projectId   Int
+  subject     String @db.VarChar(100)
   description String @db.VarChar(2000)
 
   releases FeatureRelease[]
-  tasks FeatureTask[]
-  project Project @relation(fields: [projectId], references: [id])
+  tasks    FeatureTask[]
+  project  Project          @relation(fields: [projectId], references: [id])
 }
 
 model FeatureRelease {
-  id Int @id @default(autoincrement())
-  featureId Int
-  targetReleaseId Int
-  description String @db.VarChar(2000)
+  id               Int     @id @default(autoincrement())
+  featureId        Int
+  targetReleaseId  Int
+  description      String  @db.VarChar(2000)
   isInitialRelease Boolean
 
-  feature Feature @relation(fields: [featureId], references: [id])
-  tasks FeatureTask[]
-  targetRelease Release @relation(fields: [targetReleaseId], references: [id])
+  feature       Feature       @relation(fields: [featureId], references: [id])
+  tasks         FeatureTask[]
+  targetRelease Release       @relation(fields: [targetReleaseId], references: [id])
 }
 
 model FeatureTask {
-  id Int @id @default(autoincrement())
-  featureId Int
-  featureReleaseId Int?
-  componentId Int?
-  subject String @db.VarChar(100)
-  description String @db.VarChar(2000)
-  timeDue DateTime
-  timeCompleted DateTime
-  assignedDeveloperId Int?
+  id                     Int      @id @default(autoincrement())
+  featureId              Int
+  featureReleaseId       Int?
+  componentId            Int?
+  subject                String   @db.VarChar(100)
+  description            String   @db.VarChar(2000)
+  timeDue                DateTime
+  timeCompleted          DateTime
+  assignedDeveloperId    Int?
   completedByDeveloperId Int?
 
-  feature Feature @relation(fields: [featureId], references: [id])
-  featureRelease FeatureRelease? @relation(fields: [featureReleaseId], references: [id])
-  component Component? @relation(fields: [componentId], references: [id])
-  assignedDeveloper ProjectDeveloper? @relation("feature_task_assigned_developer", fields: [assignedDeveloperId], references: [id])
+  feature              Feature           @relation(fields: [featureId], references: [id])
+  featureRelease       FeatureRelease?   @relation(fields: [featureReleaseId], references: [id])
+  component            Component?        @relation(fields: [componentId], references: [id])
+  assignedDeveloper    ProjectDeveloper? @relation("feature_task_assigned_developer", fields: [assignedDeveloperId], references: [id])
   completedByDeveloper ProjectDeveloper? @relation("feature_task_completed_by_developer", fields: [completedByDeveloperId], references: [id])
 }
