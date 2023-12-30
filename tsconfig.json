@@ -4,10 +4,15 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true
+    "strict": true,
+    "typeRoots": ["src/types"]
   },
   "files": [
+    "src/types/Express.Request.ts",
+    "src/interfaces/UserSession.ts",
+    "src/middleware/validateSession.ts",
+    "src/middleware/validateInput.ts",
     "src/main.ts",
-    "src/handlers/api.ts"
+    "src/handlers/api.ts",
   ]
 }
