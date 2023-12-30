@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import express from "express"
+import cors from "cors"
+import bodyParser from "body-parser"
 import useApiRoutes from "./handlers/api"
 
 const prisma = new PrismaClient()
@@ -15,6 +17,8 @@ async function init() {
     }
 
     const httpPort: number = Number.parseInt(process.env.HTTP_PORT)
+    app.use(cors())
+    app.use(bodyParser.json())
     app.use("/api", useApiRoutes(prisma))
     app.listen(httpPort, () => console.log(`Server is listening on port ${httpPort}.`))
 }
