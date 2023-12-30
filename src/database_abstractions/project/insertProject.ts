@@ -14,6 +14,7 @@ async function insertProject(prismaClient: PrismaClient, ownerId: number, namePr
 
     return {
         id: data.id,
+        ownerId: data.ownerId,
         namePrototype: data.namePrototype,
         nameProduct: data.nameProduct
     }
