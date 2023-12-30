@@ -10,9 +10,12 @@
   "files": [
     "src/types/Express.Request.ts",
     "src/interfaces/UserSession.ts",
+    "src/database_abstractions/project/getProjectsOwnedByUserById.ts",
+    "src/database_abstractions/project/insertProject.ts",
     "src/middleware/validateSession.ts",
     "src/middleware/validateInput.ts",
     "src/main.ts",
     "src/handlers/api.ts",
+    "src/handlers/project.ts"
   ]
 }
