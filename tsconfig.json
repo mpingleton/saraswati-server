@@ -10,12 +10,7 @@
   "files": [
     "src/types/Express.Request.ts",
     "src/interfaces/UserSession.ts",
-    "src/database_abstractions/project/getProjectById.ts",
-    "src/database_abstractions/project/getProjectDeveloperAssignmentsByProjectId.ts",
-    "src/database_abstractions/project/getProjectDeveloperAssignmentsByUserId.ts",
-    "src/database_abstractions/project/getProjectsOwnedByUserById.ts",
-    "src/database_abstractions/project/insertProjectDeveloperAssignment.ts",
-    "src/database_abstractions/project/insertProject.ts",
+    "src/database_abstractions/project.ts",
     "src/middleware/validateSession.ts",
     "src/middleware/validateInput.ts",
     "src/main.ts",

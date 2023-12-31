@@ -2,10 +2,7 @@ import { PrismaClient } from "@prisma/client"
 import express, { Request, Response } from "express"
 import Joi from "joi"
 
-import insertProject from "../database_abstractions/project/insertProject"
-import insertProjectDeveloperAssignment from "../database_abstractions/project/insertProjectDeveloperAssignment";
-import getProjectById from "../database_abstractions/project/getProjectById";
-import getProjectsOwnedByUserById from "../database_abstractions/project/getProjectsOwnedByUserById"
+import project from "../database_abstractions/project"
 import validateSession from "../middleware/validateSession"
 import validateInput from "../middleware/validateInput"
 
@@ -20,14 +17,14 @@ function putProjectDeveloperAssignment(prismaClient: PrismaClient) {
     })
 
     const handler = async (req: Request, res: Response) => {
-        const projectData = await getProjectById(prismaClient, Number.parseInt(req.params.projectId))
+        const projectData = await project.getProjectById(prismaClient, Number.parseInt(req.params.projectId))
         if (projectData === null) {
             return res.status(404).send()
         } else if (req.userSession!.userId != projectData.ownerId) {
             return res.status(403).send()
         }
 
-        await insertProjectDeveloperAssignment(prismaClient, Number.parseInt(req.params.projectId), Number.parseInt(req.params.userId))
+        await project.developers.insertProjectDeveloperAssignment(prismaClient, Number.parseInt(req.params.projectId), Number.parseInt(req.params.userId))
         return res.status(201).send()
     }
 
@@ -44,7 +41,7 @@ function getMyProjects(prismaClient: PrismaClient) {
     })
 
     const handler = async (req: Request, res: Response) => {
-        const projectData = await getProjectsOwnedByUserById(prismaClient, req.userSession!.userId)
+        const projectData = await project.getProjectsOwnedByUserById(prismaClient, req.userSession!.userId)
         return res.status(200).send(projectData)
     }
 
@@ -64,7 +61,7 @@ function putProject(prismaClient: PrismaClient) {
     })
 
     const handler = async (req: Request, res: Response) => {
-        await insertProject(prismaClient, req.userSession!.userId, req.body.namePrototype, req.body.nameProduct)
+        await project.insertProject(prismaClient, req.userSession!.userId, req.body.namePrototype, req.body.nameProduct)
         return res.status(201).send()
     }
 
